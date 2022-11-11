@@ -5,7 +5,6 @@ const express = require('express');
 const Youch = require('youch');
 require('express-async-errors');
 const routes = require('./routes');
-const path = require('path');
 
 class App {
   constructor() {
@@ -26,14 +25,14 @@ class App {
   }
 
   exceptionHandler() {
-    this.server.use(async (err, req, res, next) => {
+    this.server.use(async (err, req, res) => {
       if (process.env.NODE_ENV === 'development') {
         const errors = await new Youch(err, req).toJSON();
 
         return res.status(500).json(errors);
       }
-
-      return res.status(500).json({ error: 'Internal server error' });
+      const errors = await new Youch(err, req).toJSON();
+      return res.status(500).json(errors);
     });
   }
 }
