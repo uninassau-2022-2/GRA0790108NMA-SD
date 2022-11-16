@@ -177,8 +177,9 @@ class TicketController {
     Logger.header('Controller - Tickets - getLastCalledTickets');
 
     const lastCalledTickets = await connection('last_called')
-      .select('last_called.*')
-      .where('created_at', 'like', `%${fns.format(new Date(), 'yyyy-MM-dd')}%`)
+      .select('last_called.*', 'ticket.name as ticket_name')
+      .leftJoin('ticket', 'last_called.ticket_id', 'ticket.id')
+      .where('last_called.created_at', 'like', `%${fns.format(new Date(), 'yyyy-MM-dd')}%`)
       .orderBy('id', 'desc')
       .limit(5);
 
@@ -197,6 +198,49 @@ class TicketController {
     const calledTickets = await connection('last_called')
       .select('last_called.*')
       .where('created_at', 'like', `%${fns.format(today, 'yyyy-MM-dd')}%`);
+
+    const detailedReport = createdTickets.map(ticket => {
+      return {
+        id: ticket.id,
+        name: ticket.name,
+        number: ticket.number,
+        type: ticket.type,
+        desk: ticket.desk,
+        called: ticket.called,
+        created_at: ticket.created_at,
+        updated_at: ticket.updated_at,
+      }
+    })
+
+    return res.json({
+      createdTickets: {
+        total: createdTickets.length,
+        priorityTicketsCreated: createdTickets.filter(ticket => ticket.type === 'SP').length,
+        generalTicketsCreated: createdTickets.filter(ticket => ticket.type === 'SG').length,
+        testTicketsCreated: createdTickets.filter(ticket => ticket.type === 'SE').length,
+      },
+      calledTickets: {
+        total: calledTickets.length,
+        priorityTicketsCalled: calledTickets.filter(ticket => ticket.type === 'SP').length,
+        generalTicketsCalled: calledTickets.filter(ticket => ticket.type === 'SG').length,
+        testTicketsCalled: calledTickets.filter(ticket => ticket.type === 'SE').length,
+      },
+      detailedReport
+    })
+  }
+
+  async generateMonthlyReport(req, res) {
+    Logger.header('Controller - Tickets - generateMonthlyReport');
+
+    const today = new Date();
+
+    const createdTickets = await connection('ticket')
+      .select('ticket.*')
+      .where('created_at', 'like', `%${fns.format(today, 'yyyy-MM')}%`);
+
+    const calledTickets = await connection('last_called')
+      .select('last_called.*')
+      .where('created_at', 'like', `%${fns.format(today, 'yyyy-MM')}%`);
 
     const detailedReport = createdTickets.map(ticket => {
       return {

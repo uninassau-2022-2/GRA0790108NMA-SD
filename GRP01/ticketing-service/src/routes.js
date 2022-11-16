@@ -8,5 +8,6 @@ routes.get('/ticket/get-tickets', TicketController.list);
 routes.post('/ticket/call', TicketController.callTicket);
 routes.get('/ticket/get-last-called', TicketController.getLastCalledTickets);
 routes.get('/ticket/daily', TicketController.generateDailyReport);
+routes.get('/ticket/monthly', TicketController.generateMonthlyReport);
 
 module.exports = routes;
