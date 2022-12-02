@@ -1,5 +1,20 @@
 # SISTEMAS DISTRIBUIDOS 
 
+## GRUPO: 
+Lucas Alves Vanderlei Pedroza - 01299366
+
+José Gabriel Rodrigues dos Santos - 01308482
+
+Hugo Filipe Siqueira Costa - 01289269 
+
+Victor Nascimento Brito Moreno Neves- 01302036
+
+Renato Loureiro de Lima - 01301758 
+
+Filipe Luan da Silva - 01386106 
+
+Gabriel Gomes Nunes - 01384456
+
 ## FRONT - token-project-front
 ## API/BACKEND - project
 
